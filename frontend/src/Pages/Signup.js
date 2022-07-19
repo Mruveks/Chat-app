@@ -50,6 +50,7 @@ function Signup() {
             return alert("Please upload profile picture");
         }   else {
             const url = await uploadingImg(image);
+            console.log(url)
         }
     }   
 
@@ -61,7 +62,7 @@ function Signup() {
                     <Form style={{width: '80%', maxWidth: 500}} onSubmi={handleSignup}>
                         <h1 className="text-center">Create account</h1>
                         <div className="signup-profile-pic_container">
-                            <img src={previewImg || basicImg} className="signup-profile-pic"></img>
+                            <img src={previewImg || basicImg} alt="" className="signup-profile-pic"></img>
                             <label htmlFor="image-upload" className="image-upload-label">
                                 <i className="fas fa-plus-circle add-picture-icon"></i>
                             </label>
@@ -85,7 +86,7 @@ function Signup() {
                             <Form.Control type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
                         </Form.Group>
                         <Button variant="primary" type="submit">
-                            Create account
+                            {uploadingImg ? 'Signing You up...': "Signup"}
                         </Button>
                         <div className="py-4">
                             <p className="text-center">
