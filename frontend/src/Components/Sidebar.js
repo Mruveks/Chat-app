@@ -7,13 +7,13 @@ const Sidebar = () => {
 
     return (
         <>
-            <h2>Available rooms</h2>
+            <h2 className="mb-3">Available rooms</h2>
             <ListGroup>
                 {rooms.map((room, idx) => (
                     <ListGroup.Item key={idx}>{room}</ListGroup.Item>
                 ))}
             </ListGroup>
-            <h2>Members</h2>
+            <h2 className="mt-3">Members</h2>
         </>
     )
 }

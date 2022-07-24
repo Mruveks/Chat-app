@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useSignupUserMutation } from '../Services/appApi'
 import basicImg from '../Assets/basicprofilepicture.jpg'
 import './signup.css'
 
@@ -9,11 +10,13 @@ function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+    const navigate = useNavigate();
 
     const [image, setImage] = useState(null);
     const [uploadingImg, setUploadingImg] = useState(false);
     const [previewImg, setPrevievImg] = useState(null);
 
+    const [signupUser, {isLoading, error}]= useSignupUserMutation();
     
     function validateImg(e) {    
         const file = e.target.files[0];
@@ -32,15 +35,16 @@ function Signup() {
         try{
             setUploadingImg(true);
             let res = await fetch('https://api.claudinary.com/v1_1/dzvwmzt77/image/upload', {
-                method: "POST",
-                body: data
+                method: "post",
+                body: data,
             })
             const urlData = await res.json();
             setUploadingImg(false);
-            return urlData.url
+            return urlData.urll;
         } catch(err) {
             setUploadingImg(false);
             console.log(err)
+
         }
     }
 
@@ -49,8 +53,15 @@ function Signup() {
         if(!image){
             return alert("Please upload profile picture");
         }   else {
-            const url = await uploadingImg(image);
+            const url = await uploadImg(image);
             console.log(url)
+            signupUser({name, email, password, picture: url}).then(({data}) => {
+                if(data){
+                    console.log(data);
+                    navigate('/chat');
+                }
+            });
+
         }
     }   
 
@@ -59,7 +70,7 @@ function Signup() {
             <Row>
                 <Col md={5} className="signup_bg"></Col>
                 <Col md={7} className="d-flex align-items-center justify-content-center flex-direction-column">
-                    <Form style={{width: '80%', maxWidth: 500}} onSubmi={handleSignup}>
+                    <Form style={{width: '80%', maxWidth: 500}} onSubmit={handleSignup}>
                         <h1 className="text-center">Create account</h1>
                         <div className="signup-profile-pic_container">
                             <img src={previewImg || basicImg} alt="" className="signup-profile-pic"></img>
@@ -86,11 +97,11 @@ function Signup() {
                             <Form.Control type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
                         </Form.Group>
                         <Button variant="primary" type="submit">
-                            {uploadingImg ? 'Signing You up...': "Signup"}
+                            {uploadingImg ? 'Signing You up...' : "Signup"}
                         </Button>
                         <div className="py-4">
                             <p className="text-center">
-                                Dont't have an account? <Link to="/signup">Signup</Link>
+                                Have an account? <Link to="/login">Login</Link>
                             </p>
                         </div>
 
